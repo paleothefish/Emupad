@@ -369,52 +369,89 @@
     </section>
 
 <section id="bom">
-        <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 20px;">
-            <h1 style="margin-bottom: 0;">Bill of Materials</h1>
-            <img src="./media/meowth.gif" alt="icon" 
-                 style="height: 60px; width: auto; image-rendering: pixelated;">
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Material Name</th>
-                    <th>Price</th>
-                    <th>Qty</th>
-                    <th>Purpose</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><a href="https://www.ti.com/tool/CC3200-LAUNCHXL" target="_blank" style="color: var(--primary-blue); text-decoration: underline;">CC3200 Launchpad</a></td>
-                    <td>[Provided]</td>
-                    <td>1</td>
-                    <td>Main MCU</td>
-                </tr>
-                <tr>
-                    <td><a href="https://www.digikey.com/en/products/detail/bosch-sensortec/BMA222/2629987" target="_blank" style="color: var(--primary-blue); text-decoration: underline;">BMA222 Accelerometer</a></td>
-                    <td>[Provided]</td>
-                    <td>1</td>
-                    <td>Screen Orientation</td>
-                </tr>
-                <tr>
-                    <td><a href="https://www.adafruit.com/product/254" target="_blank" style="color: var(--primary-blue); text-decoration: underline;">Micro SD Breakout</a></td>
-                    <td>$3.50</td>
-                    <td>1</td>
-                    <td>SD Host Interface</td>
-                </tr>
-                <tr>
-                    <td><a href="https://www.amazon.com/SanDisk-microSDHC-Standard-Packaging-SDSDQ-004G-AFFP/dp/B001G6092M" target="_blank" style="color: var(--primary-blue); text-decoration: underline;">64MB Micro SD Card</a></td>
-                    <td>$3.50</td>
-                    <td>1</td>
-                    <td>ROM Storage</td>
-                </tr>
-                <tr style="font-weight: bold; border-top: 2px solid var(--primary-blue);">
-                    <td colspan="3">Total Price</td>
-                    <td>$7.00</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
+    <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 20px;">
+        <h1 style="margin-bottom: 0;">Bill of Materials</h1>
+        <img src="./media/meowth.gif" alt="icon" 
+             style="height: 60px; width: auto; image-rendering: pixelated;">
+    </div>
+    <style>
+        .provided { background-color: #f0f0f0; }
+        .stretch-goal { text-decoration: line-through; color: #888; }
+        .footnote { font-size: 0.85em; margin-top: 10px; font-style: italic; }
+    </style>
+    <table>
+        <thead>
+            <tr>
+                <th>Material Name</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="provided">
+                <td><a href="https://www.ti.com/tool/CC3200-LAUNCHXL" target="_blank">CC3200 Launchpad</a></td>
+                <td>$66.00*</td>
+                <td>1</td>
+                <td>Main MCU</td>
+            </tr>
+            <tr class="provided">
+                <td>(Sensor 1) BMA222 Accelerometer</td>
+                <td>[Included]*</td>
+                <td>1</td>
+                <td>Screen Orientation</td>
+            </tr>
+            <tr class="provided">
+                <td>(Sensor 2) IR Receiver & components</td>
+                <td>$1.41*</td>
+                <td>1</td>
+                <td>Remote Input</td>
+            </tr>
+            <tr class="provided">
+                <td><a href="https://www.adafruit.com/product/1431" target="_blank">128x128 SPI OLED</a></td>
+                <td>$39.95</td>
+                <td>1</td>
+                <td>Display Output</td>
+            </tr>
+            <tr class="provided">
+                <td>IR Remote</td>
+                <td>$9.99</td>
+                <td>1</td>
+                <td>User Control</td>
+            </tr>
+            <tr>
+                <td><a href="https://www.adafruit.com/product/4682" target="_blank">Micro SD Breakout</a></td>
+                <td>$3.50</td>
+                <td>1</td>
+                <td>SD Host Interface</td>
+            </tr>
+            <tr>
+                <td><a href="https://www.adafruit.com/product/5249" target="_blank">64MB Micro SD Card</a></td>
+                <td>$3.50</td>
+                <td>1</td>
+                <td>ROM Storage</td>
+            </tr>
+            <tr class="stretch-goal">
+                <td>Adafruit TLV320DAC3100 Mono Codec</td>
+                <td>$6.95</td>
+                <td>1</td>
+                <td>Audio Processing**</td>
+            </tr>
+            <tr class="stretch-goal">
+                <td>4Ω 2.5W Speaker</td>
+                <td>$4.30</td>
+                <td>1</td>
+                <td>Sound Output**</td>
+            </tr>
+            <tr style="font-weight: bold; border-top: 2px solid var(--primary-blue);">
+                <td colspan="2">Total Price (Excluding Provided)</td>
+                <td>$7.00</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="footnote">* Materials highlighted in grey are provided by EEC 172 material fee.</p>
+    <p class="footnote">** Component was not implemented for final checkoff/demo; intended as a stretch goal.</p>
+</section>
 </div>
 
 <script>
