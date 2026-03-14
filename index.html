@@ -269,16 +269,29 @@
     </nav>
 
     <section id="description">
-        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
-            <h1 style="margin-bottom: 0;">Description</h1>
-            <img src="./media/totodile.gif" alt="icon" 
-                 style="height: 45px; width: auto; image-rendering: pixelated;">
-        </div>
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+        <h1 style="margin-bottom: 0;">Description</h1>
+        <img src="./media/totodile.gif" alt="icon" 
+             style="height: 45px; width: auto; image-rendering: pixelated;">
+    </div>
+    <p>
+        The <strong>Emupad</strong> is a specialized handheld system that brings Game Boy and Game Boy Color emulation to the CC3200 Launchpad. By leveraging the <strong>Walnut CGB</strong> open-source emulator (with <strong>Peanut GB</strong> as a high-performance fallback), the project bridges the gap between 1980s hardware and modern IoT capabilities.
+    </p>
+    
+    <div class="card">
+        <h3>Technical Overview</h3>
         <p>
-            This project implements a dedicated emulation of the Game Boy & Game Boy Color hardware using the CC3200 Launchpad. 
-            By integrating physical sensors with local storage and cloud-based alerts, the system creates a unique, modern way to 
-            interact with retro handheld games.
+            To overcome the CC3200's <strong>256KiB SRAM</strong> limitations, we implemented an external <strong>64MiB Micro SD</strong> interface for ROM storage. User input is handled via an <strong>AT&T IR Remote</strong>, providing a full suite of Game Boy controls and a custom numerical-key ROM selection interface.
         </p>
+        <ul>
+            <li><strong>Display:</strong> A 128x128 Adafruit OLED acts as a viewport into the native 160x144 Game Boy resolution, physically shifted via the onboard <strong>BMA222 accelerometer</strong>.</li>
+            <li><strong>Connectivity:</strong> Integrated <strong>AWS IoT Core</strong> services to trigger email notifications upon ROM selection.</li>
+            <li><strong>Performance:</strong> While hardware bottlenecks and SPI communication overhead currently limit output to ~5 FPS, the architecture is designed for future <strong>DMA (Direct Memory Access)</strong> optimization to target 30 FPS.</li>
+        </ul>
+        <p style="font-size: 0.85rem; color: var(--text-light); border-top: 1px dashed #ccc; padding-top: 10px; margin-top: 10px;">
+            <em>Note: While time and hardware constraints limited audio and high-speed ROM read-back during this phase, the system provides a robust framework for theoretical 60 FPS handheld emulation.</em>
+        </p>
+    </div>
     </section>
 
     <section id="video">
@@ -302,9 +315,46 @@
         
         <h2>Functional Specification</h2>
         <p>
-            The Emupad operates through a hierarchical control flow. The user begins at a <strong>Game Selection</strong> state, navigating a file list retrieved from the SD card. Once a ROM is selected, the system enters the <strong>Emulation Loop</strong>. 
+            The Emupad operates through a hierarchical control flow, transitioning from hardware initialization to a user-driven game selection menu, and finally into the core emulation loop.
         </p>
-        
+
+        <div class="card">
+            <h3>A.1 Initialization</h3>
+            <p>
+                The system begins by initializing all peripheral drivers and hardware. This includes configuring <strong>BMA222 accelerometer</strong> parameters, clearing the <strong>OLED display</strong>, and resetting the terminal. The final step involves parsing the <strong>SD Card</strong> to index all available ROM files.
+            </p>
+            <div style="text-align: center; margin-top: 10px;">
+                <img src="./media/project_logo.jpg" alt="Project Logo" style="height: 150px; width: auto; image-rendering: pixelated; margin: 0;">
+                <p class="caption">Initial boot displays the project logo and usage pictographics.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>A.2 Game Selection</h3>
+            <p>
+                Users navigate a list of ROMs discovered on the SD card, with each page displaying up to <strong>8 titles</strong>. 
+            </p>
+            <ul>
+                <li><strong>Navigation:</strong> Uses the IR remote to scroll and traverse pages.</li>
+                <li><strong>Selection:</strong> A "double-press" logic is implemented; the first press highlights the number entry for feedback, and the second confirms the selection. Pressing "0" allows the user to scroll to the next page.</li>
+                <li><strong>Data Handling:</strong> Once confirmed, the target filename is stored and the stage concludes.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>A.3 Game Choice Notification</h3>
+            <p>
+                Upon selection, the system initializes the emulator core. Simultaneously, an <strong>AWS IoT Core</strong> update is triggered, publishing the current game state to the cloud to keep remote dashboards or logs in sync with the local device.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>A.4 Emulation Loop</h3>
+            <p>
+                The core loop attempts to target <strong>60 FPS</strong> to match the Game Boy's native ~59.7 FPS timing. Due to the high CPU overhead of the CC3200 and memory bandwidth limitations, the system focuses on maintainable stability over speedup features.
+            </p>
+        </div>
+
         <img src="./media/state_machine.jpg" alt="Emupad Functional Block Diagram" />
         <p class="caption">Figure 1: Functional Block Diagram of Task Modules and Logical Relationships</p>
 
