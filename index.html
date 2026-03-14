@@ -1,584 +1,433 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <meta name="author" content="Nicholas Bianez and Allison Kuan" />
-  <title>Emupad</title>
-  <!-- <link rel="stylesheet" type="text/css" href="assets/github-markdown-light.css" /> -->
-  <link rel="stylesheet" href="assets/github-markdown-light.css" />
-  <link rel="stylesheet" href="assets/style-customization.css" />
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emupad | EEC172 Final Report</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600&display=swap');
+
+        :root {
+            --primary-blue: #002855; 
+            --accent-gold: #b3a369;  
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-light: #666666;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            padding-bottom: 40px;
+            border-bottom: 2px solid #ececec;
+        }
+
+        /* Titles using Pixel Font */
+        .title, h1, h2, h3, .toc h2, .toc li a, #backToTop {
+            font-family: 'Press Start 2P', cursive;
+            line-height: 1.5;
+            text-transform: uppercase;
+        }
+
+        .title { 
+            font-size: 2.2rem; 
+            color: var(--primary-blue); 
+            margin: 0; 
+            line-height: 1.2;
+            border: none; 
+        }
+
+        .subtitle { 
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem; 
+            color: var(--accent-gold); 
+            font-weight: 600; 
+            margin: 10px 0; 
+            letter-spacing: 1px;
+        }
+
+        section { margin-bottom: 60px; }
+
+        section:not(:last-of-type)::after {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 4px;
+            /* Using the primary dark blue for better visibility */
+            background-image: linear-gradient(to right, var(--primary-blue) 50%, transparent 50%);
+            background-size: 10px 100%;
+            margin-top: 60px;
+            opacity: 0.6; 
+        }
+        
+        h1 { 
+            font-size: 1.2rem; 
+            color: var(--primary-blue); 
+            border-left: 5px solid var(--accent-gold); 
+            padding-left: 15px; 
+            margin-bottom: 25px; 
+        }
+
+        h2 { 
+            font-size: 0.9rem; 
+            color: var(--primary-blue); 
+            margin-top: 30px; 
+            border-bottom: 2px solid var(--accent-gold); 
+            padding-bottom: 10px; 
+        }
+        
+        h3 { 
+            font-size: 0.75rem; 
+            color: var(--accent-gold); 
+            margin-bottom: 15px;
+        }
+
+        .toc {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin: 40px 0 60px 0;
+        }
+
+        .toc h2 {
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            color: var(--text-light);
+            border: none;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        .toc li a {
+            text-decoration: none;
+            color: var(--primary-blue);
+            font-size: 0.6rem;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: var(--bg-color);
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc li a::before {
+            content: '→';
+            margin-right: 10px;
+            color: var(--accent-gold);
+        }
+
+        .toc li a:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        #backToTop {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-blue);
+            color: white;
+            border: 2px solid var(--accent-gold);
+            padding: 15px;
+            font-size: 0.5rem;
+            cursor: pointer;
+            border-radius: 4px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 4px 4px 0px var(--accent-gold);
+            transition: transform 0.1s;
+        }
+
+        #backToTop:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--accent-gold);
+        }
+
+        .card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02); 
+            margin-top: 20px; 
+            border: 1px solid #eee; 
+        }
+        
+        img { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 8px; 
+            margin: 20px 0; 
+        }
+
+        .caption { 
+            display: block; 
+            font-size: 0.9rem; 
+            color: var(--text-light); 
+            text-align: center; 
+            font-style: italic; 
+        }
+
+        .video-wrapper { 
+            position: relative; 
+            padding-bottom: 56.25%; 
+            height: 0; 
+            overflow: hidden; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+            margin: 30px 0; 
+        }
+
+        .video-wrapper iframe { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            background: white; 
+            margin-top: 20px; 
+            font-size: 0.95rem;
+        }
+
+        th { 
+            background-color: var(--primary-blue); 
+            color: white; 
+            padding: 15px; 
+            text-align: left; 
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.6rem;
+        }
+
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+    </style>
 </head>
-<article class="markdown-body">
-<header id="title-block-header">
-<h1 class="title">Emupad</h1>
-<p class="subtitle"><blockquote><b>EEC172 Final Project </blockquote></p>
-<p class="author"><strong>Nicholas Bianez and Allison Kuan</strong>
-<p class="date"><em>EEC172 WQ26</em></p> <img src="./media/mygoat_browt.jpg" style="width:auto;height:2in" /> <!-- <span class="caption"> </span> --> </div>
-<div class="abstract">
-<div class="abstract-title"><h2>Description</h2></div>
-	The project will use the CC3200 Launchpad as a Game Boy emulator, allowing arbitrary game boy games to be played. 
-  The two sensors being used are the IR Receiver and the on-board accelerometer. The Receiver will be used for generic 
-  input, while the accelerometer will be used to determine screen orientation and emulator speed up amount. AWS will be
-  used to support uploading arbitrary game files and may also permit cloud features such as save file storage, streaming, 
-  and other features, as time and other restrictions permit. To provide the necessary storage space for games and other 
-  supporting libraries, an sd card will be used and integrated into the CC3200 via the built in SD Host controller and a supporting
-  breakout board.
- <br/><br/> Our source code can be
-found <!-- replace this link -->
-<a href="https://github.com/ucd-eec172/project-website-example"> here
-(placeholder)</a>.<br />
-<div style="display:flex;flex-wrap:wrap;justify-content:space-evenly;padding-top:20px"> <div style="display: inline-block; vertical-align: bottom;"> <img src="./media/Image_001.jpg" style="width:auto;height:2in"/> <!-- <span class="caption"> </span> --> </div> <div style="display: inline-block; vertical-align: bottom;"> <img src="./media/Image_002.jpg" style="width:auto;height:2in" /> <!-- <span class="caption"> </span> --> </div> </div>
-<h2>Video Demo</h2> <div style="text-align:center;margin:auto;max-width:560px"> <div style="padding-bottom:56.25%;position:relative;height:0;"> <iframe style="left:0;top:0;width:100%;height:100%;position:absolute;" width="560" height="315" src="https://www.youtube.com/embed/wSRtnAEZhmc?si=3vQXNj4h0WkW-F-q" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> </div> </div> 
-</div>
-</header>
-<nav id="TOC" role="doc-toc">
-<h2 id="toc-title">Table of Contents</h2>
-<ul>
-<li><a href="#market-survey" id="toc-market-survey">Market
-Survey</a></li>
-<li><a href="#design" id="toc-design">Design</a>
-<ul>
-<li><a href="#system-architecture" id="toc-system-architecture">System
-Architecture</a></li>
-<li><a href="#functional-specification"
-id="toc-functional-specification">Functional Specification</a></li>
-</ul></li>
-<li><a href="#implementation" id="toc-implementation">Implementation</a>
-<ul>
-<li><a href="#cc3200-launchxl-evaluation-board"
-id="toc-cc3200-launchxl-evaluation-board">CC3200-LAUNCHXL Evaluation
-Board</a></li>
-<li><a href="#functional-blocks-master"
-id="toc-functional-blocks-master">Functional Blocks: Master</a>
-<ul>
-<li><a href="#aws-iot-core" id="toc-aws-iot-core">AWS IoT Core</a></li>
-<li><a href="#oled-display" id="toc-oled-display">OLED Display</a></li>
-<li><a href="#ir-receiver" id="toc-ir-receiver">IR Receiver</a></li>
-</ul></li>
-<li><a href="#functional-blocks-slave"
-id="toc-functional-blocks-slave">Functional Blocks: Slave</a>
-<ul>
-<li><a href="#analog-to-digital-converter-adc-board"
-id="toc-analog-to-digital-converter-adc-board">Analog-To-Digital
-Converter (ADC) Board</a></li>
-<li><a href="#thermistor" id="toc-thermistor">Thermistor</a></li>
-<li><a href="#tds-sensor-board" id="toc-tds-sensor-board">TDS Sensor
-Board</a></li>
-<li><a href="#pumps-and-control-circuit"
-id="toc-pumps-and-control-circuit">Pumps and Control Circuit</a></li>
-</ul></li>
-</ul></li>
-<li><a href="#challenges" id="toc-challenges">Challenges</a>
-<ul>
-<li><a href="#probe-channel-polarization"
-id="toc-probe-channel-polarization">Probe Channel Polarization</a></li>
-<li><a href="#current-limitation-of-gpio-pins"
-id="toc-current-limitation-of-gpio-pins">Current Limitation of GPIO
-Pins</a></li>
-<li><a href="#solution-to-challenges"
-id="toc-solution-to-challenges">Solution to Challenges</a></li>
-</ul></li>
-<li><a href="#future-work" id="toc-future-work">Future Work</a></li>
-<li><a href="#finalized-bom" id="toc-finalized-bom">Finalized
-BOM</a></li>
-</ul>
-</nav>
-<!-- EDIT METADATA ABOVE FOR CONTENTS TO APPEAR ABOVE THE TABLE OF CONTENTS -->
+<body>
 
-<!-- ALL CONTENT THAT FOLLWOWS WILL APPEAR IN AND AFTER THE TABLE OF CONTENTS -->
+<button id="backToTop" onclick="window.scrollTo(0,0);">Top ↑</button>
 
-<h1 id="market-survey">Market Survey</h1>
-<p>There are two types of similar product on the market. The first one
-is products from AeroGarden. Their products allow users to grow plants
-in nutrient solutions in a limited amount of usually 5 to 10. Compared
-with this product, our product provides an automated system for nutrient
-control that ensures the plant always has the correct amount of
-nutrients needed to avoid excess or insufficient nutrients. The other
-product is an expensive commercial system for horticulture aiming for a
-large scale of growth. Compared with this one, our product has the
-advantage of being cheap and small-scale which is more suitable for
-individual hobbyists to explore hydroponics.</p>
-<div style="display:flex;flex-wrap:wrap;justify-content:space-evenly;">
-  <div style='display: inline-block; vertical-align: top;'>
-    <img src="./media/Image_003.jpg" style="width:auto;height:200"/>
-    <span class="caption">
-      <a href="https://aerogarden.com/gardens/harvest-family/Harvest-2.0.html">AeroGarden Harvest 2.0</a>
-      <ul style="text-align:left;">
-      <li>Inexpensive ($90)</li>
-      <li>Not Automated</li>
-      <li>Small Scale</li>
-      <li>No remote monitoring</li>
-    </ul>
-    </span>
-  </div>
-  <div style='display: inline-block; vertical-align: top;'>
-    <img src="./media/Image_004.jpg" style="width:auto;height:200" />
-    <span class="caption">
-      <a href="https://www.hydroexperts.com.au/Autogrow-MultiGrow-Controller-All-In-One-Controller-8-Growing-Zones">Autogrow Multigrow</a>
-      <ul style="text-align:left;">
-      <li>Expensive ($4500)</li>
-      <li>Fully Automated</li>
-      <li>Huge Scale</li>
-      <li>Cloud monitoring</li>
-    </ul>
-    </span>
-  </div>
-</div>
+<div class="container">
+    <header id="top">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 10px;">
+            <img src="./media/pombon.gif" alt="Pombon" 
+                 style="height: 100px; width: auto; border: none; box-shadow: none; margin: 0; image-rendering: pixelated;">
+            
+            <div style="text-align: center;">
+                <h1 class="title">Emupad</h1>
+                <p class="subtitle">EEC172 Final Project Report</p>
+            </div>
 
-<h1 id="design">Design</h1>
-<h2 id="system-architecture">System Architecture</h2>
-<div style="display:flex;flex-wrap:wrap;justify-content:space-evenly;">
-  <div style="display:inline-block;vertical-align:top;flex:1 0 400px;">
-    As shown in the system flowchart, we use one of the CC3200 boards for
-    the closed feedback loop for maintaining concentration in the
-    environment. The board will read values with I2C protocol through an ADC
-    which reads values from the thermistor and the TDS meter sensor. The
-    board will also periodically read user-defined thresholds from the AWS
-    cloud using RESTful APIs. When the sensory values read outside of the
-    user-defined thresholds, the board will activate the motor control
-    function to pump either water or nutrient solution to bring the
-    concentration back within the thresholds. Meanwhile, another CC3200
-    board is frequently reading from the AWS cloud to present the current
-    TDS reading and user-defined threshold to the user on an OLED through
-    SPI protocols. To adjust the thresholds, the user can either do it
-    remotely or locally by using a TV remote to type the number into the IR
-    receiver. The adjustments will be updated to the AWS and if the user
-    updates remotely, the local CC3200 board will update the values in the
-    next synchronization.
-  </div>
-  <div style="display:inline-block;vertical-align:top;flex:0 0 400px;">
-    <div class="fig">
-      <img src="./media/Image_005.jpg" style="width:90%;height:auto;" />
-      <span class="caption">System Flowchart</span>
-    </div>
-  </div>
-</div>
+            <img src="./media/doduo.gif" alt="Doduo" 
+                 style="height: 60px; width: auto; border: none; box-shadow: none; margin: 0; image-rendering: pixelated;">
+        </div>
+        <p><strong>Nicholas Bianez and Allison Kuan</strong> | EEC172 WQ26</p>
+    </header>
 
-<h2 id="functional-specification">Functional Specification</h2>
-<div style="display:flex;flex-wrap:wrap;justify-content:space-evenly;">
-  <div style="display:inline-block;vertical-align:top;flex:1 0 300px;">
-    Our system works based on the following state diagram. The device will
-    periodically monitor the temperature and the electrical conductivity
-    (EC) of the solution and convert the values into a TDS value using a
-    calibration curve. At the same time, the device will check for threshold
-    inputs, both over the AWS shadow and via manual input on the IR
-    receiver. It will compare the TDS with the lower and upper thresholds
-    set by the user. If the value is within the thresholds, it will stay in
-    the rest state. If the TDS is higher than the upper thresholds, it will
-    go to the water state and activate the water pump until the PPM is lower
-    than the upper thresholds and go back to the rest state. If the PPM is
-    lower than the lower thresholds, it will go to the nutrient state and
-    activate the nutrient pump until the PPM is higher than the lower
-    thresholds and go back to the rest state. In each state, the device will
-    periodically post the TDS.
-  </div>
-  <div style="display:inline-block;vertical-align:top;flex:0 0 500px">
-    <div class="fig">
-      <img src="./media/Image_006.jpg" style="width:90%;height:auto;" />
-      <span class="caption">State Diagram</span>
-    </div>
-  </div>
-</div>
+    <nav class="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#description">Description</a></li>
+            <li><a href="#video">Video Demo</a></li>
+            <li><a href="#design">Design</a></li>
+            <li><a href="#implementation">Implementation</a></li>
+            <li><a href="#challenges">Challenges</a></li>
+            <li><a href="#future-work">Future Work</a></li>
+            <li><a href="#bom">Bill of Materials</a></li>
+        </ul>
+    </nav>
 
-<h1 id="implementation">Implementation</h1>
-<h3 id="cc3200-launchxl-evaluation-board">CC3200-LAUNCHXL Evaluation
-Board</h3>
-<p>All control and logic was handled by two CC3200 microcontroller
-units, one each for the Master and Slave device. On the master device,
-it was responsible for decoding IR inputs from the remote to allow the
-user to input thresholds to be sent over AWS. The board’s SPI
-functionality, using the TI SPI library, was used to interface with the
-OLED display. The MCU is WiFi enabled, allowing a remote connection
-between the two boards.</p>
-<p>On the slave device, the microcontroller was responsible for the same
-functionalities as above, in addition to the TDS reading and control.
-This includes interfacing with the ADC over the I2C bus, reading
-thresholds over HTTP from the AWS device shadow, writing the reported
-TDS to the device shadow, and activating the two pumps using the BJT
-control circuit.</p>
-<h2 id="functional-blocks-master">Functional Blocks: Master</h2>
-<h3 id="aws-iot-core">AWS IoT Core</h3>
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 200px'>
-    The AWS IoT core allows our devices to communicate with each other
-    asynchronously. The master device can update the desired thresholds, and
-    the slave device will read them and synchronize them to the reported
-    state. The slave device will also post the TDS and temperature readings
-    periodically.
-  </div>
-  <div style='display: inline-block; vertical-align: top;flex:0 0 400px'>
-    <div class="fig">
-      <img src="./media/Image_007.jpg" style="width:auto;height:2.5in" />
-      <span class="caption">Device Shadow JSON</span>
-    </div>
-  </div>
+    <section id="description">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+            <h1 style="margin-bottom: 0;">Description</h1>
+            <img src="./media/totodile.gif" alt="icon" 
+                 style="height: 45px; width: auto; image-rendering: pixelated;">
+        </div>
+        <p>
+            This project implements a dedicated emulation of the Game Boy & Game Boy Color hardware using the CC3200 Launchpad. 
+            By integrating physical sensors with local storage and cloud-based alerts, the system creates a unique, modern way to 
+            interact with retro handheld games.
+        </p>
+    </section>
+
+    <section id="video">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+            <h1 style="margin-bottom: 0;">Video Demo</h1>
+            <img src="./media/pikamine.gif" alt="icon" 
+                 style="height: 45px; width: auto; image-rendering: pixelated;">
+        </div>
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/HMgTai3Dy5s" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <p class="caption">Demonstration of ROM selection via IR remote and accelerometer-based screen orientation.</p>
+    </section>
+
+    <section id="design">
+        <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 20px;">
+            <h1 style="margin-bottom: 0;">Design</h1>
+            <img src="./media/froakie.gif" alt="icon" 
+                 style="height: 60px; width: auto; image-rendering: pixelated;">
+        </div>
+        
+        <h2>Functional Specification</h2>
+        <p>
+            The Emupad operates through a hierarchical control flow. The user begins at a <strong>Game Selection</strong> state, navigating a file list retrieved from the SD card. Once a ROM is selected, the system enters the <strong>Emulation Loop</strong>. 
+        </p>
+        
+        <img src="./media/state_machine.jpg" alt="Emupad Functional Block Diagram" />
+        <p class="caption">Figure 1: Functional Block Diagram of Task Modules and Logical Relationships</p>
+
+        <h2>System Architecture</h2>
+        <p>
+            The system architecture integrates the CC3200’s ARM Cortex-M4 core with high-speed SPI for the OLED, the SD Host controller for ROM retrieval, and AWS IoT Core for system-level notifications. 
+        </p>
+        <img src="./media/functional_block_diagram.jpg" alt="System Architecture" />
+        <p class="caption">Figure 2: Architectural Overview of Hardware Interconnects</p>
+    </section>
+
+    <section id="implementation">
+        <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 20px;">
+            <h1 style="margin-bottom: 0;">Implementation</h1>
+            <img src="./media/torchic.gif" alt="icon" 
+                 style="height: 80px; width: auto; image-rendering: pixelated;">
+        </div>
+        
+        <div class="card">
+            <h3>Game Selection Interface</h3>
+            <p>
+                We developed a custom UI that allows users to browse the SD card directory. Upon selection, the system dynamically loads the binary data from the <strong>ROM file</strong> via the SD Host protocol.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Dynamic Screen Translation</h3>
+            <p>
+                Since the Game Boy's native 160x144 resolution is larger than our 128x128 OLED, the <strong>BMA222 Accelerometer</strong> acts as a physical "window" controller.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Hardware "Rotation Lock"</h3>
+            <p>
+                To provide a stable viewing experience, we implemented a <strong>Lock Feature</strong>. This software toggle ignores accelerometer interrupts, "freezing" the screen at a specific offset.
+            </p>
+        </div>
+    </section>
+
+    <section id="challenges">
+        <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 20px;">
+            <h1 style="margin-bottom: 0;">Challenges</h1>
+            <img src="./media/mewtwo.gif" alt="icon" 
+                 style="height: 60px; width: auto; image-rendering: pixelated;">
+        </div>
+        <p>
+            One major challenge involved the memory bandwidth required to fetch ROM data from the SD card fast enough. We addressed this by maximizing the SPI clock frequency and implementing a pre-fetch buffer to minimize CPU idle time.
+        </p>
+    </section>
+
+    <section id="future-work">
+        <div style="display: flex; align-items: center; gap: 1px; margin-bottom: 4px;">
+            <h1 style="margin-bottom: 0;">Future Work</h1>
+            <img src="./media/angry_bird.gif" alt="icon" 
+                 style="height: 110px; width: auto; image-rendering: pixelated;">
+        </div>
+        <ul>
+            <li><strong>Audio Integration:</strong> Implementing real-time audio output via external DAC.</li>
+            <li><strong>DMA Implementation:</strong> Utilizing Direct Memory Access to offload the I/O burden from the CPU.</li>
+        </ul>
+    </section>
+
+<section id="bom">
+        <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 20px;">
+            <h1 style="margin-bottom: 0;">Bill of Materials</h1>
+            <img src="./media/meowth.gif" alt="icon" 
+                 style="height: 60px; width: auto; image-rendering: pixelated;">
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Material Name</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="https://www.ti.com/tool/CC3200-LAUNCHXL" target="_blank" style="color: var(--primary-blue); text-decoration: underline;">CC3200 Launchpad</a></td>
+                    <td>[Provided]</td>
+                    <td>1</td>
+                    <td>Main MCU</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.digikey.com/en/products/detail/bosch-sensortec/BMA222/2629987" target="_blank" style="color: var(--primary-blue); text-decoration: underline;">BMA222 Accelerometer</a></td>
+                    <td>[Provided]</td>
+                    <td>1</td>
+                    <td>Screen Orientation</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.adafruit.com/product/254" target="_blank" style="color: var(--primary-blue); text-decoration: underline;">Micro SD Breakout</a></td>
+                    <td>$3.50</td>
+                    <td>1</td>
+                    <td>SD Host Interface</td>
+                </tr>
+                <tr>
+                    <td><a href="https://www.amazon.com/SanDisk-microSDHC-Standard-Packaging-SDSDQ-004G-AFFP/dp/B001G6092M" target="_blank" style="color: var(--primary-blue); text-decoration: underline;">64MB Micro SD Card</a></td>
+                    <td>$3.50</td>
+                    <td>1</td>
+                    <td>ROM Storage</td>
+                </tr>
+                <tr style="font-weight: bold; border-top: 2px solid var(--primary-blue);">
+                    <td colspan="3">Total Price</td>
+                    <td>$7.00</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 </div>
 
-<h3 id="oled-display">OLED Display</h3>
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 400px'>
-    On both Master and Slave devices, the user can view the current TDS and
-    temperature of the plant solution on an OLED display. The user can also
-    use the display to view and edit the TDS thresholds. The CC3200 uses the
-    SPI bus to communicate with the display module.
-  </div>
-  <div style='display: inline-block; vertical-align: top;flex:0 0 400px'>
-    <div class="fig">
-      <img src="./media/Image_008.jpg" style="width:auto;height:2in" />
-      <span class="caption">OLED Wiring Diagram</span>
-    </div>
-  </div>
-</div>
+<script>
+    // Show/Hide back to top button on scroll
+    window.onscroll = function() {
+        var btn = document.getElementById("backToTop");
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+            btn.style.display = "block";
+        } else {
+            btn.style.display = "none";
+        }
+    };
+</script>
 
-<h3 id="ir-receiver">IR Receiver</h3>
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 400px'>
-    On both the Master and Slave devices, a user can input the TDS
-    thresholds using a TV remote. These TV remotes use the NEC code format
-    with a carrier frequency of 38KHz. The Vishay IR receiver is connected
-    to Pin 62 of the CC3200, which is configured as a GPIO input pin. Each
-    positive edge of the signal triggers an interrupt in the main program,
-    storing the pulse distances into a buffer, and allowing us to decode the
-    inputs (1-9, delete and enter). The IR receiver is connected to VCC
-    through a resistor and a capacitor to filter any ripples.
-  </div>
-  <div style='display: inline-block; vertical-align: top;flex:0 0 400px'>
-    <div class="fig">
-      <img src="./media/Image_009.jpg" style="width:auto;height:2in" />
-      <span class="caption">IR Receiver Wiring Diagram</span>
-    </div>
-  </div>
-</div>
-
-<h2 id="functional-blocks-slave">Functional Blocks: Slave</h2>
-<p>The slave device contains all the functional blocks from the master
-device, plus the following:</p>
-<h3 id="analog-to-digital-converter-adc-board">Analog-To-Digital
-Converter (ADC) Board</h3>
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 400px'>
-    The outputs from the thermistor and TDS sensor board are
-    in the form of analog voltages, which need to be converted to digital
-    values to be usable in our program. We chose the AD1015 breakout board
-    from Adafruit, which sports 4-channels and 12 bits of precision. We
-    ended up using only 2 channels, so there is a potential for even more
-    cost savings. The ADC board supports I2C communication, which we can use
-    to request and read the two channel voltages. 
-    The <a href="https://cdn-shop.adafruit.com/datasheets/ads1015.pdf">
-    product datasheet</a> contains the necessary configuration values
-    and register addresses for operation.
-  </div>
-  <div style='display: inline-block; vertical-align: top;flex:1 0 400px'>
-    <div class="fig">
-      <img src="./media/Image_010.jpg" style="width:auto;height:2in" />
-      <span class="caption">ADC Wiring Diagram</span>
-    </div>
-  </div>
-</div>
-
-<h3 id="thermistor">Thermistor</h3>
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 300px;'>
-    Conductivity-based TDS measurements are sensitive to temperature. To
-    allow accurate TDS measurements in a variety of climates and seasons,
-    temperature compensation calculations must be performed. To measure the
-    temperature, we use an NTC thermistor connected in a voltage divider
-    with a 10k resistor. The voltage across the resistor is read by the ADC
-    and converted to temperature using the equation provided by the
-    thermistor datasheet.
-  </div>
-  <div style='display: inline-block; vertical-align: top;flex:1 0 400px'>
-    <div class="fig">
-      <img src="./media/Image_011.jpg" style="width:auto;height:2in" />
-      <span class="caption">Thermistor Circuit Diagram</span>
-    </div>
-  </div>
-</div>
-
-<h3 id="tds-sensor-board">TDS Sensor Board</h3>
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 500px'>
-    In our first attempt to measure TDS, we used a simple two-probe analog
-    setup with a voltage divider. We soon found out that this was a naïve
-    approach (see Challenges). Consequently, we acquired a specialty TDS
-    sensing board from CQRobot, which generates a sinusoidal pulse and
-    measures the voltage drop to give a highly precise voltage to the ADC.
-    The MCU can then convert this voltage to a TDS value using the equation
-    provided by the device datasheet. We calibrated the TDS readings using a
-    standalone TDS sensor pen. After calibration and setting up the curves
-    for temperature compensation, we were able to achieve TDS readings
-    accurate to within 5% of the TDS sensor pen.
-  </div>
-  <div style='display: inline-block; vertical-align: top;flex:1 0 600px'>
-    <div class="fig">
-      <img src="./media/Image_012.jpg" style="width:auto;height:2in;padding-top:30px" />
-      <span class="caption">TDS Sensor Wiring Diagram</span>
-    </div>
-  </div>
-</div>
-
-<h3 id="pumps-and-control-circuit">Pumps and Control Circuit</h3>
-<div style="display:flex;flex-wrap:wrap;justify-content:space-between;">
-  <div style='display: inline-block; vertical-align: top;flex:1 0 500px'>
-    The CC3200 is unable to provide sufficient power to drive the pumps,
-    which need 100mA of current each. Therefore, we used an external power
-    source in the form of 2 AA batteries for each pump motor. To allow the
-    CC3200 to turn on/off the motors, we designed a simple amplifier using a
-    Common Emitter topology. When the control pin is asserted HIGH, the BJT
-    will allow current to flow from 3V to ground through the pump motor.
-    Conversely, if the control signal is LOW, the BJT will not allow current
-    to flow in the motor. For each motor, there is a reverse-biased diode
-    connected across it. This protects our circuit from current generated by
-    the motor if it is spun from external force or inertia.
-  </div>
-  <div style='display: inline-block; vertical-align: top;flex:1 0 600px'>
-    <div class="fig">
-      <img src="./media/Image_013.jpg" style="width:auto;height:2in;padding-top:30px" />
-      <span class="caption">Pump Circuit Diagrams</span>
-    </div>
-  </div>
-</div>
-
-<h1 id="challenges">Challenges</h1>
-<p>The most significant challenge we faced while developing this
-prototype was of inaccurate and inconsistent Electrical Conductivity
-(EC) measurements. This occurred due to two reasons: probe channel
-polarization and current limitations of GPIO pins.</p>
-<h2 id="probe-channel-polarization">Probe Channel Polarization</h2>
-<p>Our first design for the probe was simply two copper rods, which
-would add as electrodes. This probe would be connected in series with a
-1000-ohm resistor to act as a voltage divider. We would simply connect
-the probe to VCC and measure the voltage divider through the ADC,
-allowing us to calculate the EC. However, when we used the probe for a
-few minutes, we realized that the EC value would continue to rise. This
-is because the DC current causes an ionized channel to build up between
-the two electrodes in the water. This cause inconsistent EC readings as
-time goes on.</p>
-<h2 id="current-limitation-of-gpio-pins">Current Limitation of GPIO
-Pins</h2>
-<p>Our next idea was to try using the GPIO pins to power the probe,
-since we can turn it off when not needed, preventing excessive
-polarization. However, the GPIO pins are current limited, and any
-control circuit with a transistor would introduce extra voltage drops.
-Therefore, the simple two-probe implementation was not feasible.</p>
-<h2 id="solution-to-challenges">Solution to Challenges</h2>
-<p>We realized that using DC current to measure EC was not feasible.
-Therefore, we purchased a standalone EC measurement board from CQRobot.
-This inexpensive solution ($8) used a low-voltage, low-current AC signal
-to prevent polarization. The board would convert the AC voltage drop
-across the solution to a DC analog voltage, which would then be read by
-our ADC. After calibrating the setup using a commercial TDS pen, the
-results were accurate within 3%, and would not drift by more than 0.5%
-over time.</p>
-<h1 id="future-work">Future Work</h1>
-<p>Given more time, we had the idea of developing a web app to allow
-users to control the device from their cell phone. Another idea we
-wanted to implement in the future is adding a grow light and pH
-controller to maintain a more suitable and stable environment for
-different plants to grow.</p>
-<h1 id="finalized-bom">Finalized BOM</h1>
-<!-- you can convert google sheet cells to html for free using a converter
-  like https://tabletomarkdown.com/convert-spreadsheet-to-html/ -->
-
-<table style="border-collapse:collapse;">
-<thead>
-  <tr>
-    <th><p>No.</p></th>
-    <th><p>PART NAME</p></th>
-    <th><p>DESCRIPTION</p></th>
-    <th><p>Qty</p></th>
-    <th><p>SUPPLIER / MANUFACTURER</p></th>
-    <th><p>UNIT COST</p></th>
-    <th><p>TOTAL PART COST</p></th>
-    <th><p>Purpose</p></th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td><p>1</p></td>
-    <td><p>CC3200-LAUNCHXL</p></td>
-    <td><p>MCU Evaluation Board</p></td>
-    <td><p>2</p></td>
-    <td><p>Provided by EEC172 Course</p></td>
-    <td><p>$66.00</p></td>
-    <td><p>$132.00</p></td>
-    <td><p>Control Remote and Local Devices</p></td>
-  </tr>
-  <tr>
-    <td><p>2</p></td>
-    <td><p>Adafruit 1431 OLED</p></td>
-    <td><p>128x128 RGB OLED Display. SPI protocol</p></td>
-    <td><p>2</p></td>
-    <td><p>Provided by EEC172 Course</p></td>
-    <td><p>$39.95</p></td>
-    <td><p>$79.90</p></td>
-    <td><p>Display PPM, Temperature, Thresholds, Inputs</p></td>
-  </tr>
-  <tr>
-    <td><p>3</p></td>
-    <td><p>Adafruit 4547 3VDC Pump</p></td>
-    <td><p>Submersible pump. 3V 100mA DC</p></td>
-    <td><p>2</p></td>
-    <td><p>Adafruit</p></td>
-    <td><p>$2.95</p></td>
-    <td><p>$5.90</p></td>
-    <td><p>For dispensing water and nutrient solution</p></td>
-  </tr>
-  <tr>
-    <td><p>4</p></td>
-    <td><p>Adafruit 4545 6mm Tube</p></td>
-    <td><p>6mm Silicone Tube: 1 meter length</p></td>
-    <td><p>1</p></td>
-    <td><p>Adafruit</p></td>
-    <td><p>$1.50</p></td>
-    <td><p>$1.50</p></td>
-    <td><p>For dispensing water and nutrient solution</p></td>
-  </tr>
-  <tr>
-    <td><p>5</p></td>
-    <td><p>NTC Thermistor 10k</p></td>
-    <td><p>10k ohm nominal resistance, 100cm lead</p></td>
-    <td><p>1</p></td>
-    <td><p>(Already had one, available on Aliexpress)</p></td>
-    <td><p>$0.92</p></td>
-    <td><p>$0.92</p></td>
-    <td><p>For temperature compensation</p></td>
-  </tr>
-  <tr>
-    <td><p>6</p></td>
-    <td><p>Adafruit AD1015 12-bit ADC</p></td>
-    <td><p>12-bit resolution, 4 channels, I2C</p></td>
-    <td><p>1</p></td>
-    <td><p>Adafruit</p></td>
-    <td><p>$9.95</p></td>
-    <td><p>$9.95</p></td>
-    <td><p>To convert Thermistor and TDS sensor reading to digital</p></td>
-  </tr>
-  <tr>
-    <td><p>7</p></td>
-    <td><p>PN2222A Transistor</p></td>
-    <td><p>NPN BJT (40V, 1000mA)</p></td>
-    <td><p>2</p></td>
-    <td><p>Digikey (onSemi)</p></td>
-    <td><p>$0.40</p></td>
-    <td><p>$0.80</p></td>
-    <td><p>For digital motor control</p></td>
-  </tr>
-  <tr>
-    <td><p>8</p></td>
-    <td><p>1N4001 Rectifier Diode</p></td>
-    <td><p>Diffused junction: 50V 1000mA</p></td>
-    <td><p>2</p></td>
-    <td><p>Digikey (Good-Ark Semi)</p></td>
-    <td><p>$0.16</p></td>
-    <td><p>$0.32</p></td>
-    <td><p>Reverse Current Protection</p></td>
-  </tr>
-  <tr>
-    <td><p>9</p></td>
-    <td><p>10k ohm resistor</p></td>
-    <td><p>10k ohm , 1% tolerance, 0.25W</p></td>
-    <td><p>1</p></td>
-    <td><p>Digikey (Stackpole Electronics)</p></td>
-    <td><p>$0.10</p></td>
-    <td><p>$0.10</p></td>
-    <td><p>Voltage divider for Thermistor</p></td>
-  </tr>
-  <tr>
-    <td><p>10</p></td>
-    <td><p>Vishay TSOP31130 IR RCVR</p></td>
-    <td><p>30kHz carrier frequency</p></td>
-    <td><p>2</p></td>
-    <td><p>Provided by EEC172 Course</p></td>
-    <td><p>$1.41</p></td>
-    <td><p>$2.82</p></td>
-    <td><p>Decode user inputs</p></td>
-  </tr>
-  <tr>
-    <td><p>11</p></td>
-    <td><p>330 ohm resistor</p></td>
-    <td><p>330 ohm resistor, &lt;5% tolerance, 3W</p></td>
-    <td><p>2</p></td>
-    <td><p>Provided by EEC172 Course</p></td>
-    <td><p>$0.59</p></td>
-    <td><p>$1.18</p></td>
-    <td><p>Current Limit for IR Receiv er</p></td>
-  </tr>
-  <tr>
-    <td><p>12</p></td>
-    <td><p>ATT-RC1534801 Remote</p></td>
-    <td><p>General-purpose TV remote. IR NTC protocol</p></td>
-    <td><p>1</p></td>
-    <td><p>Provided by EEC172 Course</p></td>
-    <td><p>$9.99</p></td>
-    <td><p>$9.99</p></td>
-    <td><p>Allow user inputs</p></td>
-  </tr>
-  <tr>
-    <td><p>13</p></td>
-    <td><p>CQRSENTDS01 TDS Sensor</p></td>
-    <td><p>Analog reading 0-2.3V. 0-1000ppm range</p></td>
-    <td><p>1</p></td>
-    <td><p>CQRobot</p></td>
-    <td><p>$7.99</p></td>
-    <td><p>$7.99</p></td>
-    <td><p>Measure TDS of plant solution</p></td>
-  </tr>
-  <tr>
-    <td><p>14</p></td>
-    <td><p>10uF Capacitor</p></td>
-    <td><p>Electrolytic Cap 100V</p></td>
-    <td><p>2</p></td>
-    <td><p>Provided by EEC172 Course</p></td>
-    <td><p>$0.18</p></td>
-    <td><p>$0.36</p></td>
-    <td><p>DC Filtering for IR Receiv er</p></td>
-  </tr>
-  <tr>
-    <td><p>15</p></td>
-    <td><p><u>AA Battery (4ct</u>)</p></td>
-    <td><p>1.5 Volt, Non-rechargable</p></td>
-    <td><p>1</p></td>
-    <td><p>Already had, but</p>
-      <p>available on Amazon</p></td>
-    <td><p>$3.65</p></td>
-    <td><p>$3.65</p></td>
-    <td><p>Provide Power to Motors</p></td>
-  </tr>
-  <tr>
-    <td><p>16</p></td>
-    <td><p>Battery Holder</p></td>
-    <td><p>2xAA (3 Volts Total)</p></td>
-    <td><p>2</p></td>
-    <td><p>Amazon</p></td>
-    <td><p>$2.50</p></td>
-    <td><p>$4.99</p></td>
-    <td><p>Provide Power to Motors</p></td>
-  </tr>
-  <tr>
-    <td colspan="3">
-      <p>TOTAL PARTS</p></td>
-    <td><p>25</p></td>
-    <td colspan="2">
-      <p>TOTAL</p></td>
-    <td><p>$262.37</p></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td colspan="3">
-      <p>TOTAL PARTS (Excluding Provided)</p></td>
-    <td><p>14</p></td>
-    <td colspan="2">
-      <p>TOTAL (Exluding Provided)</p></td>
-    <td><p>$36.12</p></td>
-    <td></td>
-  </tr>
-</tbody>
-</table>
-</article>
+</body>
 </html>
