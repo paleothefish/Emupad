@@ -323,7 +323,7 @@
         </p>
 
         <div class="card">
-            <h3>A.1 Initialization</h3>
+            <h3>Initialization</h3>
             <p>
                 The system begins by initializing all peripheral drivers and hardware. This includes configuring <strong>BMA222 accelerometer</strong> parameters, clearing the <strong>OLED display</strong>, and resetting the terminal. The final step involves parsing the <strong>SD Card</strong> to index all available ROM files.
             </p>
@@ -334,7 +334,7 @@
         </div>
 
         <div class="card">
-            <h3>A.2 Game Selection</h3>
+            <h3>Game Selection</h3>
             <p>
                 Users navigate a list of ROMs discovered on the SD card, with each page displaying up to <strong>8 titles</strong>. 
             </p>
@@ -346,14 +346,14 @@
         </div>
 
         <div class="card">
-            <h3>A.3 Game Choice Notification</h3>
+            <h3>Game Choice Notification</h3>
             <p>
                 Upon selection, the system initializes the emulator core. Simultaneously, an <strong>AWS IoT Core</strong> update is triggered, publishing the current game state to the cloud to keep remote dashboards or logs in sync with the local device.
             </p>
         </div>
 
         <div class="card">
-            <h3>A.4 Emulation Loop</h3>
+            <h3>Emulation Loop</h3>
             <p>
                 The core loop attempts to target <strong>60 FPS</strong> to match the Game Boy's native ~59.7 FPS timing. Due to the high CPU overhead of the CC3200 and memory bandwidth limitations, the system focuses on maintainable stability over speedup features.
             </p>
@@ -372,28 +372,28 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
             <div class="card" style="margin-top: 0;">
-                <h3>B.1 Control Interface</h3>
+                <h3>Control Interface</h3>
                 <p style="font-size: 0.9rem;">
                     Interprets real-time data from the <strong>BMA222</strong> and <strong>IR Receiver</strong>. Tilt data and remote button presses are mapped to Game Boy registers and passed directly to the emulation front-end.
                 </p>
             </div>
 
             <div class="card" style="margin-top: 0;">
-                <h3>B.2 Game Manager</h3>
+                <h3>Game Manager</h3>
                 <p style="font-size: 0.9rem;">
                     Orchestrates hardware setup, the UI state machine, and AWS triggers. It implements a <strong>dynamic frame-timing loop</strong> to stabilize framerates based on processing overhead.
                 </p>
             </div>
 
             <div class="card" style="margin-top: 0;">
-                <h3>B.3 File Interface</h3>
+                <h3>File Interface</h3>
                 <p style="font-size: 0.9rem;">
                     Utilizes <strong>FatFS and CC3200 SDK disk libraries</strong> to manage I/O with the SD Card. This interface handles the retrieval of large ROM binaries and persistent save data.
                 </p>
             </div>
 
             <div class="card" style="margin-top: 0;">
-                <h3>B.4 Emulation Core</h3>
+                <h3>Emulation Core</h3>
                 <p style="font-size: 0.9rem;">
                     Powered by <strong>Walnut CGB</strong> to support both GB and GBC instruction sets. This module manages the OLED line-buffer drawing and memory-mapped I/O for the virtual hardware.
                 </p>
@@ -401,7 +401,7 @@
         </div>
 
         <div class="card" style="border: 1px dashed var(--accent-gold); background: #fffcf5;">
-            <h3>B.5 Audio Backend (Conceptual)</h3>
+            <h3>Audio Backend (Conceptual)</h3>
             <p style="font-size: 0.9rem;">
                 Planned integration with the <strong>TLV320DAC3100</strong> to synchronize audio samples with CPU cycles. While not implemented due to time constraints, the architecture supports an I2S-based audio pipeline.
             </p>
