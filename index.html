@@ -364,10 +364,48 @@
 
         <h2>System Architecture</h2>
         <p>
-            The system architecture integrates the CC3200’s ARM Cortex-M4 core with high-speed SPI for the OLED, the SD Host controller for ROM retrieval, and AWS IoT Core for system-level notifications. 
+            The system architecture integrates the CC3200’s ARM Cortex-M4 core with high-speed SPI for the OLED, the SD Host controller for ROM retrieval, and AWS IoT Core for system-level notifications.
         </p>
+
         <img src="./media/functional_block_diagram.jpg" alt="System Architecture" />
         <p class="caption">Figure 2: Architectural Overview of Hardware Interconnects</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+            <div class="card" style="margin-top: 0;">
+                <h3>B.1 Control Interface</h3>
+                <p style="font-size: 0.9rem;">
+                    Interprets real-time data from the <strong>BMA222</strong> and <strong>IR Receiver</strong>. Tilt data and remote button presses are mapped to Game Boy registers and passed directly to the emulation front-end.
+                </p>
+            </div>
+
+            <div class="card" style="margin-top: 0;">
+                <h3>B.2 Game Manager</h3>
+                <p style="font-size: 0.9rem;">
+                    Orchestrates hardware setup, the UI state machine, and AWS triggers. It implements a <strong>dynamic frame-timing loop</strong> to stabilize framerates based on processing overhead.
+                </p>
+            </div>
+
+            <div class="card" style="margin-top: 0;">
+                <h3>B.3 File Interface</h3>
+                <p style="font-size: 0.9rem;">
+                    Utilizes <strong>FatFS and CC3200 SDK disk libraries</strong> to manage I/O with the SD Card. This interface handles the retrieval of large ROM binaries and persistent save data.
+                </p>
+            </div>
+
+            <div class="card" style="margin-top: 0;">
+                <h3>B.4 Emulation Core</h3>
+                <p style="font-size: 0.9rem;">
+                    Powered by <strong>Walnut CGB</strong> to support both GB and GBC instruction sets. This module manages the OLED line-buffer drawing and memory-mapped I/O for the virtual hardware.
+                </p>
+            </div>
+        </div>
+
+        <div class="card" style="border: 1px dashed var(--accent-gold); background: #fffcf5;">
+            <h3>B.5 Audio Backend (Conceptual)</h3>
+            <p style="font-size: 0.9rem;">
+                Planned integration with the <strong>TLV320DAC3100</strong> to synchronize audio samples with CPU cycles. While not implemented due to time constraints, the architecture supports an I2S-based audio pipeline.
+            </p>
+        </div>
     </section>
 
     <section id="implementation">
