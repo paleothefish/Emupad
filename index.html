@@ -10,10 +10,10 @@
         :root {
             --primary-blue: #002855; 
             --accent-gold: #b3a369;  
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
+            --bg-color: #ffffff; 
+            --card-bg: #f7f5ed;
             --text-main: #333333;
-            --text-light: #666666;
+            --text-light: #615a53;
         }
 
         html {
@@ -41,7 +41,6 @@
             border-bottom: 2px solid #ececec;
         }
 
-        /* Titles using Pixel Font */
         .title, h1, h2, h3, .toc h2, .toc li a, #backToTop {
             font-family: 'Press Start 2P', cursive;
             line-height: 1.5;
@@ -102,7 +101,7 @@
         }
 
         .toc {
-            background: white;
+            background: var(--card-bg);
             padding: 30px;
             border-radius: 12px;
             border: 1px solid #eee;
@@ -127,27 +126,23 @@
         }
 
         .toc li a {
-            text-decoration: none;
-            color: var(--primary-blue);
-            font-size: 0.6rem;
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            background: var(--bg-color);
-            border-radius: 6px;
-            transition: all 0.2s ease;
+        text-decoration: none; 
+        color: var(--primary-blue); 
+        font-size: 0.6rem;
+        display: flex; 
+        align-items: center; 
+        padding: 12px 15px;
+        background: #ffffff; /* Stays white by default */
+        border: 2px solid var(--accent-gold); /* Gold border added */
+        border-radius: 6px; 
+        transition: all 0.2s ease;
         }
 
-        .toc li a::before {
-            content: '→';
-            margin-right: 10px;
-            color: var(--accent-gold);
-        }
-
-        .toc li a:hover {
-            background: var(--primary-blue);
-            color: white;
-            transform: translateX(5px);
+        .toc li a:hover { 
+        background: var(--primary-blue); /* Becomes dark blue on hover */
+        color: #ffffff; /* Text becomes white on hover */
+        border-color: var(--primary-blue); /* Border matches hover background */
+        transform: translateX(5px);
         }
 
         #backToTop {
@@ -173,7 +168,7 @@
         }
 
         .card { 
-            background: white; 
+            background: var(--card-bg); 
             padding: 25px; 
             border-radius: 8px; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.02); 
@@ -292,7 +287,7 @@
             <li><strong>Connectivity:</strong> Integrated <strong>AWS IoT Core</strong> services to trigger email notifications upon ROM selection.</li>
             <li><strong>Performance:</strong> While hardware bottlenecks and SPI communication overhead currently limit output to ~5 FPS, the architecture is designed for future <strong>DMA (Direct Memory Access)</strong> optimization to target 30 FPS.</li>
         </ul>
-        <p style="font-size: 0.85rem; color: var(--text-light); border-top: 1px dashed #ccc; padding-top: 10px; margin-top: 10px;">
+        <p style="font-size: 0.85rem; color: var(--text-light); border-top: 3px dashed #ccc; padding-top: 10px; margin-top: 10px;">
             <em>Note: While time and hardware constraints limited audio and high-speed ROM read-back during this phase, the system provides a robust framework for theoretical 60 FPS handheld emulation.</em>
         </p>
     </div>
@@ -400,7 +395,7 @@
             </div>
         </div>
 
-        <div class="card" style="border: 1px dashed var(--accent-gold); background: #fffcf5;">
+        <div class="card" style="border: 1px dashed var(--accent-gold); background:#f7ebee;">
             <h3>Audio Backend (Conceptual)</h3>
             <p style="font-size: 0.9rem;">
                 Planned integration with the <strong>TLV320DAC3100</strong> to synchronize audio samples with CPU cycles. While not implemented due to time constraints, the architecture supports an I2S-based audio pipeline.
@@ -409,62 +404,150 @@
     </section>
 
     <section id="implementation">
-        <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 20px;">
-            <h1 style="margin-bottom: 0;">Implementation</h1>
-            <img src="./media/torchic.gif" alt="icon" 
-                 style="height: 80px; width: auto; image-rendering: pixelated;">
-        </div>
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+        <h1 style="margin-bottom: 0;">System Implementation</h1>
+        <img src="./media/torchic.gif" alt="icon" 
+             style="height: 80px; width: auto; image-rendering: pixelated;">
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px;">
         
-        <div class="card">
-            <h3>Game Selection Interface</h3>
+        <div class="card" style="border-top: 4px solid #ffcc00;">
+            <h3>IR Receiver & Command Interpreter</h3>
             <p>
-                We developed a custom UI that allows users to browse the SD card directory. Upon selection, the system dynamically loads the binary data from the <strong>ROM file</strong> via the SD Host protocol.
+                The input system utilizes a <strong>Vishay TSOP 3xx IR Receiver</strong>. We implemented an IR Rx Interpreter that captures pulses from the TSOP's output voltage and decodes them via an interrupt-driven routine. For our primary controller, the <strong>AT&T S10-S3 Remote</strong> (TV Code 1012), the system successfully interprets the <strong>NEC Protocol</strong> to extract command and address data. While certain proprietary buttons remain for future decoding, the core control interface queues these IR commands and maps them directly to the emulator’s key-state register.
             </p>
         </div>
 
-        <div class="card">
-            <h3>Dynamic Screen Translation</h3>
+        <div class="card" style="border-top: 4px solid #ffcc00;">
+            <h3>BMA222 Accelerometer & Tilt Mapping</h3>
             <p>
-                Since the Game Boy's native 160x144 resolution is larger than our 128x128 OLED, the <strong>BMA222 Accelerometer</strong> acts as a physical "window" controller.
+                To handle spatial input, the onboard <strong>BMA222 Accelerometer</strong> communicates over I2C. We focused strictly on gravitational data to detect tilt angles. To minimize compute overhead, we implemented a <strong>non-interpolated linear approximation of arcsin</strong>, producing an angle within ~1° of accuracy. This angle is processed through a mapping function (accounting for angle wrap) that translates physical orientation into <strong>6 distinct tilt states</strong> for both roll and pitch, defining the forward-facing orientation relative to the Launchpad's USB connection.
             </p>
         </div>
 
-        <div class="card">
-            <h3>Hardware "Rotation Lock"</h3>
+        <div class="card" style="border-top: 4px solid #4444ff;">
+            <h3>Disk I/O & FAT-FS Integration</h3>
             <p>
-                To provide a stable viewing experience, we implemented a <strong>Lock Feature</strong>. This software toggle ignores accelerometer interrupts, "freezing" the screen at a specific offset.
+                Storage is handled via an external <strong>Adafruit Micro SD breakout</strong> using the <strong>SDIO/SDHost</strong> protocol. We integrated the FAT filesystem and Disk I/O libraries provided by the CC3200 SDK to enable byte-level file access. This "File Interface" layer is critical for fetching ROM data dynamically and managing persistent Save Data (SRAM) between gaming sessions, effectively overcoming the internal memory limitations of the microcontroller.
             </p>
         </div>
+
+        <div class="card" style="border-top: 4px solid #4444ff;">
+            <h3>OLED Driver & Draw Optimization</h3>
+            <p>
+                The display stack utilizes the <strong>SSD1351 128x128 OLED</strong>. We adapted the Adafruit libraries into a custom C driver, replacing Arduino-specific SPI calls with high-performance CC3200 SPI drivers. To improve redraw speed, we implemented <strong>bulk transfers</strong> and explored <strong>DMA (Direct Memory Access)</strong>. While theoretical clock speeds of 20MHz suggest much higher throughput, these optimizations were vital for maintaining the display's stability during the emulator's heavy compute cycles.
+            </p>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #2ecc71;">
+            <h3>Unified Control Interface</h3>
+            <p>
+                The Control Interface serves as the software glue, integrating both remote inputs and accelerometer tilt data. It maintains a <strong>command queue</strong> for the IR interpreter and provides utility functions that the Game Manager calls on every frame. This ensures that screen shifting (the "viewing window" logic) and button presses are synchronized perfectly with the emulation loop.
+            </p>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #95a5a6;">
+            <h3>Audio Backend & Driver (Design Phase)</h3>
+            <p>
+                The planned audio system was designed to interface with the <strong>TLV320DAC3100</strong> via I2C. We identified compatible drivers that would have required minimal modification to work with the Walnut CGB audio interface. However, this feature was strategically cut to avoid further taxing the CC3200's 80MHz CPU, ensuring that all available cycles were dedicated to stable gameplay and video rendering.
+            </p>
+        </div>
+
+    </div>
     </section>
 
-    <section id="challenges">
-        <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 20px;">
-            <h1 style="margin-bottom: 0;">Challenges</h1>
-            <img src="./media/mewtwo.gif" alt="icon" 
-                 style="height: 60px; width: auto; image-rendering: pixelated;">
+    <section id="challenges" style="margin-top: 50px;">
+    <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 20px;">
+        <h1 style="margin-bottom: 0;">Challenges</h1>
+        <img src="./media/mewtwo.gif" alt="icon" 
+             style="height: 60px; width: auto; image-rendering: pixelated;">
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px;">
+        
+        <div class="card" style="border-left: 5px solid #e74c3c;">
+            <h3>OLED SPI Throughput & Draw Latency</h3>
+            <p>
+                A primary bottleneck was the redraw rate of the 128x128 OLED. Each full redraw requires writing 32KiB (256Kib) to the device. At a <strong>20MHz clock speed</strong>, a theoretical maximum of 80FPS should be achievable. However, due to <strong>DMA complications</strong> and the intensive frame computation time, we were unable to reach these speeds. While frame interlacing and further redraw optimizations could have enabled a "2x speedup" feature, the final implementation was constrained to <strong>~5FPS</strong>.
+            </p>
         </div>
-        <p>
-            One major challenge involved the memory bandwidth required to fetch ROM data from the SD card fast enough. We addressed this by maximizing the SPI clock frequency and implementing a pre-fetch buffer to minimize CPU idle time.
-        </p>
+
+        <div class="card" style="border-left: 5px solid #e74c3c;">
+            <h3>80MHz CPU vs. GBC Optimization</h3>
+            <p>
+                The 80MHz clock speed of the CC3200 faced significant challenges emulating the <strong>8.389MHz Game Boy Color</strong>. Because the original GBC was so tightly optimized, a single frame of emulation on our hardware took <strong>100–200ms</strong>. This alone limited the framerate to 10FPS; when paired with SPI communication overhead, the performance solidified at ~5FPS. Transitions to more performant engines like <em>Peanut GB</em> or faster microcontrollers would be required to reach the native 60FPS target.
+            </p>
+        </div>
+
+        <div class="card" style="border-left: 5px solid #3498db;">
+            <h3>SRAM Constraints & Stringent Management</h3>
+            <p>
+                The 256KiB of available SRAM was almost entirely utilized, leaving only 16KiB unallocated for <strong>TI-RTOS</strong> functions. We utilized <strong>-O2 optimization</strong> during compilation just to fit the code alongside data. While a 32KiB ROM could fit in SRAM for testing, larger games like <em>Pokemon Crystal</em> (8MiB) exceed the available space by <strong>32x</strong>. This forced a dependency on the SD Card for ROM I/O, further impacting the emulator’s performance.
+            </p>
+        </div>
+
+        <div class="card" style="border-left: 5px solid #f39c12;">
+            <h3>SD Card I/O & Signal Integrity</h3>
+            <p>
+                We encountered several hardware-level issues with the SD Card interface, including driver hangs and corrupted ROM data. <strong>Resolution:</strong> Physical interference was mitigated by shortening lead wiring and lowering the clock speed, while driver hangs required a hardware power cycle to resolve. Unfortunately, persistent ROM data corruption issues remained unresolved within the project's final window.
+            </p>
+        </div>
+
+        <div class="card" style="border-left: 5px solid #95a5a6;">
+            <h3>Two-Week Development Timeline</h3>
+            <p>
+                The most significant hurdle was the <strong>strict 2-week deadline</strong>. This timeline had to cover the hardware build, Proposal/BoM documentation, demonstration slides, and website development. Due to these constraints, several planned features (including the audio backend, frame interlacing, and full DMA optimization) had to be cut to ensure a stable, functional demonstration.
+            </p>
+        </div>
+
+    </div>
     </section>
 
-    <section id="future-work">
-        <div style="display: flex; align-items: center; gap: 1px; margin-bottom: 4px;">
-            <h1 style="margin-bottom: 0;">Future Work</h1>
-            <img src="./media/angry_bird.gif" alt="icon" 
-                 style="height: 110px; width: auto; image-rendering: pixelated;">
+<section id="future-work" style="margin-top: 50px;">
+    <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 20px;">
+        <h1 style="margin-bottom: 0;">Future Work</h1>
+        <img src="./media/angry_bird.gif" alt="icon" 
+             style="height: 100px; width: auto; image-rendering: pixelated;">
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px;">
+        
+        <div class="card" style="border-top: 4px solid #9b59b6;">
+            <h3>Asynchronous Rendering & DMA</h3>
+            <p>
+                To eliminate the drawing bottleneck, the next phase involves implementing <strong>DMA (Direct Memory Access)</strong> for SPI transfers. This would allow the game manager to compute the next frame in parallel with the current frame's transmission to the OLED. Theoretically, this could push the interface to 160FPS, though a stable 60FPS is the practical target. Additionally, exploring <strong>line interleaving</strong> and redundant draw skipping could further optimize throughput.
+            </p>
         </div>
-        <ul>
-            <li><strong>Audio Integration:</strong> Implementing real-time audio output via external DAC.</li>
-            <li><strong>DMA Implementation:</strong> Utilizing Direct Memory Access to offload the I/O burden from the CPU.</li>
-        </ul>
-    </section>
+
+        <div class="card" style="border-top: 4px solid #2ecc71;">
+            <h3>Emulator Logic & Alignment</h3>
+            <p>
+                We observed that every fourth frame computes ~4x faster than others, suggesting <strong>memory alignment issues</strong> or periodic overhead in the emulation loop. Investigating this anomaly could stabilize frame times and bring GBC games closer to 60FPS. For standard Game Boy titles, transitioning to the <strong>Peanut GB engine</strong> (which has been proven on similar microcontrollers) would likely provide the performance overhead needed for high-speed emulation.
+            </p>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #f1c40f;">
+            <h3>Proprietary Protocol Decoding</h3>
+            <p>
+                The current interface is limited by the documented NEC protocol of the AT&T S10-S3 remote. Future work includes reverse-engineering the <strong>proprietary protocol</strong> used by the remote's navigation (arrow) keys. Unlocking these "reserved" keys would allow for a significantly more intuitive user experience, replacing the current mapping with native directional control.
+            </p>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #e67e22;">
+            <h3>SD Card Data Integrity</h3>
+            <p>
+                Resolving the <strong>ROM data corruption</strong> is a high priority. At startup, binary data currently disagrees with expected values, preventing larger ROMs from loading correctly. We suspect either driver-level timing issues or file corruption during the SDIO fetch. Debugging this interface is the final step required to support arbitrary ROM sizes and complex titles.
+            </p>
+        </div>
+    </div>
+</section>
 
 <section id="bom">
     <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 20px;">
         <h1 style="margin-bottom: 0;">Bill of Materials</h1>
         <img src="./media/meowth.gif" alt="icon" 
-             style="height: 60px; width: auto; image-rendering: pixelated;">
+             style="height: 50px; width: auto; image-rendering: pixelated;">
     </div>
     <style>
         .provided { background-color: #f0f0f0; }
@@ -501,13 +584,13 @@
             </tr>
             <tr class="provided">
                 <td><a href="https://www.adafruit.com/product/1431" target="_blank">128x128 SPI OLED</a></td>
-                <td>$39.95</td>
+                <td>$39.95*</td>
                 <td>1</td>
                 <td>Display Output</td>
             </tr>
             <tr class="provided">
                 <td>IR Remote</td>
-                <td>$9.99</td>
+                <td>$9.99*</td>
                 <td>1</td>
                 <td>User Control</td>
             </tr>
