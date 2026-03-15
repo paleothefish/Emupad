@@ -71,7 +71,6 @@
             display: block;
             width: 100%;
             height: 4px;
-            /* Using the primary dark blue for better visibility */
             background-image: linear-gradient(to right, var(--primary-blue) 50%, transparent 50%);
             background-size: 10px 100%;
             margin-top: 60px;
@@ -132,16 +131,16 @@
         display: flex; 
         align-items: center; 
         padding: 12px 15px;
-        background: #ffffff; /* Stays white by default */
-        border: 2px solid var(--accent-gold); /* Gold border added */
+        background: #ffffff; 
+        border: 2px solid var(--accent-gold); 
         border-radius: 6px; 
         transition: all 0.2s ease;
         }
 
         .toc li a:hover { 
-        background: var(--primary-blue); /* Becomes dark blue on hover */
-        color: #ffffff; /* Text becomes white on hover */
-        border-color: var(--primary-blue); /* Border matches hover background */
+        background: var(--primary-blue); 
+        color: #ffffff; 
+        border-color: var(--primary-blue); 
         transform: translateX(5px);
         }
 
@@ -514,7 +513,7 @@
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px;">
         
         <div class="card" style="border-top: 4px solid #9b59b6;">
-            <h3>Asynchronous Rendering & DMA</h3>
+            <h3>Render Speed Optimization</h3>
             <p>
                 To eliminate the drawing bottleneck, the next phase involves implementing <strong>DMA (Direct Memory Access)</strong> for SPI transfers. This would allow the game manager to compute the next frame in parallel with the current frame's transmission to the OLED. Theoretically, this could push the interface to 160FPS, though a stable 60FPS is the practical target. Additionally, exploring <strong>line interleaving</strong> and redundant draw skipping could further optimize throughput.
             </p>
