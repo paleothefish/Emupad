@@ -230,7 +230,13 @@
 </head>
 <body>
 
-<button id="backToTop" onclick="window.scrollTo(0,0);">Top ↑</button>
+<div id="backToTopContainer" style="position: fixed; bottom: 30px; right: 30px; display: none; z-index: 1000; text-align: center;">
+    <img src="./media/starly.gif" alt="back to top" 
+         style="height: 50px; width: auto; display: block; margin: 0 auto -5px auto; image-rendering: pixelated;">
+    
+    <button id="backToTop" onclick="window.scrollTo(0,0);" 
+            style="position: static; display: block;">Top ↑</button>
+</div>
 
 <div class="container">
     <header id="top" style="text-align: center; padding-bottom: 40px; border-bottom: 2px solid #ececec;">
@@ -408,7 +414,7 @@
     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
         <h1 style="margin-bottom: 0;">System Implementation</h1>
         <img src="./media/torchic.gif" alt="icon" 
-             style="height: 80px; width: auto; image-rendering: pixelated;">
+             style="height: 70px; width: auto; image-rendering: pixelated;">
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px;">
@@ -633,13 +639,14 @@
 <script>
     // Show/Hide back to top button on scroll
     window.onscroll = function() {
-        var btn = document.getElementById("backToTop");
-        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-            btn.style.display = "block";
-        } else {
-            btn.style.display = "none";
-        }
-    };
+    // Target the container, not just the button
+    var container = document.getElementById("backToTopContainer");
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        container.style.display = "block";
+    } else {
+        container.style.display = "none";
+    }
+};
 </script>
 
 </body>
